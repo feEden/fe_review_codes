@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .root {
+            position: relative;
+        }
+
+        .root div {
+            margin: 10px;
+            padding-left: 20px;
+            counter-increment: characters;
+            border-bottom: 1px solid yellowgreen;
+        }
+
+        .root div::before {
+            content: counter(characters) "、";
+            position: absolute;
+            left: 10px;
+        }
+
+        .root div:hover::after {
+            content: attr(data-tooltip);
+            position: relative;
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 5px;
+            border-radius: 4px;
+            box-sizing: border-box;
+            bottom: -28px;
+        }
+    </style>
+</head>
+<body>
+    <div class="root">
+        <div data-tooltip="tooltip1">一般我们可以设置一个JPEG或者PNG文件作为背景，或者也可以设置一个渐变的背景</div>
+        <div data-tooltip="tooltip3">afsdadsfasdf</div>
+        <div data-tooltip="tooltip4">fadsfasdf</div>
+        <div data-tooltip="tooltip5">adsfasdf</div>
+        <div data-tooltip="tooltip6">afdsf</div>
+    </div>
+</body>
+</html>

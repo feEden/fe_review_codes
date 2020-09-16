@@ -1,0 +1,50 @@
+{
+    // 告诉babel用了什么语法
+    "presets": [
+      [
+        // 默认只支持语法转化，对应的API支持需要开启useBuiltIns
+        // 智能根据browserslist（设置项目主要支持的浏览器范围，
+        // babel根据这个范围，生成能在这些浏览器版本正常运行的代码）语法解析出需要支持的目标环境，编译成不同的目标代码
+        // https://www.jianshu.com/p/0dc3bddb6da8
+        // https://babeljs.io/docs/en/next/babel-preset-env.html
+        "@babel/preset-env",
+        {
+          // useBuiltIns usage | entry | false
+          // 配置是否引入polyfill 如果配置的浏览器范围支持而生新特性，并不会引入
+          // usage 在用到的地方，引入需要处理立polyfill
+          // entry 在入口文件 引入所有用到的polyfill
+          // false  不引入，不支持新语法的浏览器将保存
+          "useBuiltIns": "usage",
+          // 目标代码的模块化 "amd" | "umd" | "systemjs" | "commonjs" | false
+          // 默认commonjs
+          // webpack2/3建立设置成false，交给webpack处理
+          // "modules": "commonjs",
+          //  配置使用corejs的版本，默认使用2.x
+          "corejs": 3,
+          // 配置支持的环境 chrome, opera, edge, firefox, safari, ie, ios, android, node, electron
+          "targets": {
+            // "ie": 12
+            // "esmodules": true
+          }
+        }
+      ]
+    ],
+    // 负责转换代码
+    "plugins": [
+      // 将不同文件的相同的辅助提取到一个文件
+      // 会自动引入一些pollfill
+      // ["transform-runtime", {
+      //   "polyfill": false,
+      //   "regenerator": true
+      // }]
+    ]
+    //babel-pollfill(core-js) 和 babel-runtime的区别
+    /**
+    * Babel只负责新语法的转换工作，如extends转成prototype,  处理箭头函数，
+    * 而对于一些新的API，如Set、Map, [].includes等方法
+    * 是不做处理的，所有，babel提供了babel-pollfill库，给新的API提供额垫片，保证正常运行。
+    * 而babel-runtime主要是，babel在转换新语法的过程中，会用到一些辅助函数，它的作用是将每个文件
+    * 相同的辅助函数提取到一个的文件，能减小boundler的大小。而这些辅助函数用到的一些静态方法babel
+    * 也会提供相应的pollfill
+    **/
+  }

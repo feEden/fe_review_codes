@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>防抖、节流测试</title>
+</head>
+<body>
+
+    <input type="text" class="input" />
+
+    <script type="module">
+        import { throttle } from './throttle.js';
+        import { debounce } from './debounce.js';
+
+        const inputObj = document.querySelector('.input');
+        
+        // 节流 1000 输出一次
+        const throttleFn = throttle((e) => {
+            console.log(e.target.value, 'throttle');
+        }, 1000);
+        inputObj.addEventListener('input', throttleFn);
+
+        // >=1000 输出一次
+        const debounceFn = debounce((e) => {
+            console.log(e.target.value, 'debounce');
+        }, 1000);
+        inputObj.addEventListener('input', debounceFn);
+
+        window.onbeforeunload = () => {
+            inputObj.addEventListener('input', debounceFn);
+            inputObj.addEventListener('input', throttleFn);
+        }
+    </script>
+</body>
+</html>

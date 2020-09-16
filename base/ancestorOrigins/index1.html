@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ancestorOrigins1</title>
+</head>
+<body>
+    ancestorOrigins1
+    <script>
+        // 返回嵌套当前页面的URL， 需要启服务，要不然获取的是null 只有谷歌有效
+        console.log(window.location.ancestorOrigins);
+        // 0
+        console.log(window.frames.length);
+        // 1
+        console.log(parent.frames.length);
+        // iframe  中只有self 没有this, top
+        console.log(self);
+    </script>
+</body>
+</html>

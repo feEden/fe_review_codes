@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="s1">s1
+        <div id="s2">s2</div>
+        <div id="s3">s3</div>
+        <div id="s4">s4</div>
+        <div id="s5">s5</div>
+    </div>
+    <script>
+        /**
+            事件捕获： 由外向内触发事件 addEventListener 第三个参数 true
+            事件冒泡： 由内向外触发事件 addEventListener 第三个参数 false
+            同一个DOM同时绑定了捕获、冒泡，执行顺序取决于注册顺序
+
+            https://segmentfault.com/a/1190000005654451
+        */
+        const s1 = document.querySelector('#s1');
+        const s2 = document.querySelector('#s2');
+
+        // 点击s2, 输出s2 s1
+        s1.addEventListener("click",function(e){
+            console.log("s1 冒泡事件");
+        }, false);
+
+        // 点击s2, 输出s1 s2
+        s1.addEventListener("click",function(e){
+            console.log("s1 捕获事件");
+        }, true);
+        s2.addEventListener("click",function(e){
+            console.log("s2 捕获事件");
+        }, true);
+
+        // 事件委托，在父容器注册事件，监控子DOM的行为
+        s1.addEventListener('click', (e) => {
+            console.log(e);
+        }, false);
+    </script>
+</body>
+</html>

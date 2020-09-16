@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>函数提升、变量名提升问题</title>
+  </head>
+  <body>
+    <script>
+        /**
+         *  ƒ a() {} [ƒ a(){}]
+            ƒ a() {} [ƒ a(){}]
+            2 [2]
+         * 
+            解析: 
+            函数test执行，创建执行上下文，分成两个阶段：
+                1. 执行上下文创建阶段：
+                    1. 创建变量对象
+                        1. 创建arguments对象，建立属性名和属性值映射
+                        2. 检查当前执行上下文中的函数声明，在变量对象（VO）中创建一个以函数名为key的属性，属性值指向该函数的内存地址
+                        3. 检查当前执行上下文中的变量声明，在VO中创建一个以变量名为key的属性，属性值分为以下三种情况：
+                            a. 函数参数，使用函数传入的参数初始化
+                            b. var声明的变量，初始化为undefined
+                            c. let/const声明的变量，不做初始化（也就是let/const声明的变量其实有变量提升，但是在创建阶段没有进行初始化，
+                                所以会提示《Cannot access 'a' before initialization》，
+                                也就是暂时性死区https://sinaad.github.io/xfe/2016/02/26/temporal-dead-zone-tdz-demystified/
+                            ）
+                    2. 建立作用域链
+                    3. 确定this
+                2. 执行上下文执行阶段
+                    1. 执行函数（变量赋值等）
+
+            扩展 VO/AO的区别：
+                VO是函数被调用的时候（位于执行栈顶），该函数执行上下创建阶段中的一个变量对象（提前收集函数、变量声明），
+                在函数真正执行的时候，VO变成AO，完成变量赋值
+
+            本题中，函数test执行，创建执行上下文阶段，创建了一个变量对象：
+            VO = {
+                // 函数参数的映射对象
+                arguments: {
+                    a: VO[a]
+                },
+                // 先检查函数声明，在检查变量声明（这里有两个，函数参数啊和函数内的变量a, 同名了只会声明一个），
+                // 发现变量a已经指向了函数地址，就不会进行初始化（赋值10）
+                a: a() {},
+            }
+            执行上下文创建完成后，真正执行函数，VO变成AO, 在执行到a=2之前
+            AO = {
+                arguments: {
+                    a: AO[a]
+                },
+                a: a() {},
+            }
+            执行a=2之后
+            AO = {
+                arguments: {
+                    a: AO[a]
+                },
+                a: 2
+            }
+         **/
+      function test(a) {
+        function a() {}
+        console.log(a, Array.from(arguments));
+
+        console.log(a, Array.from(arguments));
+
+        var a = 2;
+
+        console.log(a, Array.from(arguments));
+      }
+      test(10);
+    </script>
+  </body>
+</html>

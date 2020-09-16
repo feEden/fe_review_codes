@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>闭包</title>
+  </head>
+  <body>
+    <script>
+      /**
+        闭包是一个特殊的对象，由两部分组成，执行上下文（A）以及在执行上下文创建的函数（B），
+        当B执行时，如果访问了A中变量对象中的值，就会生成一个闭包，chrome中使用执行上下文A代指这个闭包（也有使用B）
+          1. 有一种特殊情况，如下例，执行mark函数的时候，函数内部并没有使用上层作用域的变量，但是
+          还是生成了闭包，这是因为，函数add/sum使用了，浏览器怕这两个函数执行，所以保留下了上层环境
+          的变量对象
+      **/
+      // for (var i = 1; i <= 5; i++) {
+      //   debugger;
+      //   // ((i) => {
+      //     setTimeout(function timer() {
+      //       debugger;
+      //       console.log(i);
+      //     }, i * 1000);
+      //   // })(i);
+      // }
+      // console.log(i);
+      // (function () {
+      //   var a = 10;
+      //   var b = 20;
+
+      //   var test = {
+      //     m: 20,
+      //     add: function (x) {
+      //       return a + x;
+      //     },
+      //     sum: function () {
+      //       return a + b + this.m;
+      //     },
+      //     mark: function (k, j) {
+      //       return k + j;
+      //     },
+      //   };
+
+      //   window.test = test;
+      // })();
+      // test.mark()
+      // test.add();
+      // 会生成闭包
+      // const _mark = test.mark;
+      // _mark();
+      const test = (() => {
+        const a = 1;
+        return () => {
+          const b = 1;
+          // console.log(a);
+          return () => {
+            console.log(b);
+          }
+        }
+      })()
+      test()()
+
+      // function test() {
+      //   const a = 1;
+      //   return () => {
+      //     eval('console.log(a)');
+      //   }
+      // }
+      // // eval 会生成闭包，同时保留下了arguement
+      // test()()
+    </script>
+  </body>
+</html>

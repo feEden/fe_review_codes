@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>初步实现响应式更新数据</title>
+</head>
+<body>
+    <div id="app"></div>
+    <script>
+        const obj = {};
+        function defineReactive(target, key, val) {
+            Object.defineProperty(target, key, {
+                get() {
+                    return val;
+                },
+                set(newVal) {
+                    if (val !== newVal) {
+                        val = newVal;
+                        update();
+                    }
+                },
+            });
+        }
+        // 对象的每个属性都要对应一个更新函数，
+        function update() {
+            document.querySelector('#app').innerText = obj.foo;
+        }
+
+        defineReactive(obj, 'foo', 'foo');
+        obj.foo = '123';
+        setInterval(() => {
+            //转换成当前秒数
+            obj.foo = new Date().toLocaleTimeString()							
+        }, 1000);
+    </script>
+</body>
+</html>

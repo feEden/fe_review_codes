@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>无限加载</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .section {
+            width: 500px;
+            height: 500px;
+            margin: 0 auto;
+            margin-top: 100px;
+            font-size: 12px;
+            overflow-y: auto;
+            border: 1px solid yellowgreen;
+        }
+        ul > li{
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            list-style: none;
+            border-bottom: 1px solid orchid;
+        }
+
+        .loadMore {
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="section">
+        <ul class="ul"></ul>
+        <div class="loadMore">加载中...</div>
+    </div>
+    <script>
+        window.onload = () => {
+            const ul = document.querySelector('ul');
+            const section = document.querySelector('.section');
+            const loadMoreDom = document.querySelector('.loadMore');
+
+            const itemHeight = 30;
+            // 获取渲染区域能渲染的数量
+            const { height } = section.getBoundingClientRect();
+            let count = parseInt(height / itemHeight);
+
+            function loadMore() {
+                const fragment = document.createDocumentFragment();
+                for (let i =0; i < count; i++) {
+                    const li = document.createElement('li');
+                    li.innerText = Math.random() * 10;
+                    fragment.append(li);
+                }
+                ul.append(fragment);
+            }
+
+            function observe() {
+                const intersectionObserver = new IntersectionObserver((entries) => {
+                    const item = entries[0];
+                    if (item.intersectionRatio <= 0) return;
+                    loadMore();
+                }, {
+                    root: section,
+
+                    threshold: [1],
+                });
+                intersectionObserver.observe(loadMoreDom);
+            }
+            
+            observe();
+            // const pageCode = 0;
+            // const pageSize = 100;
+            // const total = 100000;
+            // let pageTotal = total / pageSize;
+            // pageTotal = total % pageSize === 0 ? pageTotal : pageTotal + 1;
+
+            // const section = document.querySelector('.section');
+            // const fragment = document.createDocumentFragment();
+            
+            // const ul = document.createElement('ul');
+            // // rendering(recalculate style + layout) 5225ms ~ 7717ms
+            // for(let i = 0; i < 100000; i++) {
+            //     const li = document.createElement('li');
+            //     li.innerText = `第${i}个数据`;
+            //     fragment.append(li);
+            // }
+            // ul.append(fragment);
+            // section.append(ul);
+            
+            // function loop(curTotal, curIndex) {
+            //     if (curTotal <= 0) return;
+
+            //     // 时间分片 2886ms
+            //     const count = Math.min(curTotal, pageSize);
+            //     window.requestAnimationFrame(() => {
+            //         const fragment = document.createDocumentFragment();
+            //         for (let i =0; i <count; i++) {
+            //             const li = document.createElement('li');
+            //             li.innerText = `第${curIndex + i}个数据`;
+            //             fragment.append(li); 
+            //         }
+            //         ul.append(fragment);
+            //         section.append(ul);
+            //         loop(curTotal - count, pageCode + count);
+            //     });
+            // }
+            // loop(total, pageCode);
+        }
+    </script>
+</body>
+</html>

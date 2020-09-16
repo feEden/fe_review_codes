@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Promise 编程题2</title>
+  </head>
+  <body>
+    <script>
+      /**
+         * 实现 mergePromise 函数，把传进去的数组按顺序先后执行，并且把返回的数据先后放到数组 data 中。
+            const timeout = ms => new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve();
+                }, ms);
+            });
+            const ajax1 = () => timeout(2000).then(() => {
+                console.log('1');
+                return 1;
+            });
+            const ajax2 = () => timeout(1000).then(() => {
+                console.log('2');
+                return 2;
+            });
+            const ajax3 = () => timeout(2000).then(() => {
+                console.log('3');
+                return 3;
+            });
+            const mergePromise = ajaxArray => {
+                // 在这里实现你的代码
+
+            };
+            mergePromise([ajax1, ajax2, ajax3]).then(data => {
+                console.log('done');
+                console.log(data); // data 为 [1, 2, 3]
+            });
+            // 要求分别输出
+            // 1
+            // 2
+            // 3
+            // done
+            // [1, 2, 3]
+         * **/
+      const timeout = (ms) =>
+        new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve();
+          }, ms);
+        });
+      const ajax1 = () =>
+        timeout(2000).then(() => {
+          console.log("1");
+          return 1;
+        });
+      const ajax2 = () =>
+        timeout(1000).then(() => {
+          console.log("2");
+          return 2;
+        });
+      const ajax3 = () =>
+        timeout(2000).then(() => {
+          console.log("3");
+          return 3;
+        });
+
+      const mergePromise = (ajaxArray) => {
+        // Promise.resolve() 没有传参数，返回一个Promise对象，并立即执行then的回调
+        let gennerator = Promise.resolve();
+        const data = [];
+
+        ajaxArray.forEach((item) => {
+          // 1. gennerator.then(item) 执行item函数，返回一个promise对象
+          // 2. gennerator.then(item).then() 返回一个新的promise(pending状态)。item函数的定时器到了才会被resolve（fullfilled状态）,回调才会被执行
+          // 3. 将第二步生成的promise对象（定时器结束前pending）重新替换gennerator, 所以下一次循环函数的执行必须等第一个被resolved后
+          // 4. 循环结束，将最后一个函数的生成的gennerator（pending）返回出去
+          gennerator = gennerator.then(item).then((res) => {
+            data.push(res);
+            return data;
+          });
+        });
+
+        return gennerator;
+      };
+
+      mergePromise([ajax1, ajax2, ajax3]).then((data) => {
+        console.log("done");
+        console.log(data); // data 为 [1, 2, 3]
+      });
+    </script>
+  </body>
+</html>

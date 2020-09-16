@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ancestorOrigins</title>
+</head>
+<body>
+    ancestorOrigins
+    <iframe src="http://10.105.17.51:8082/index1.html" frameborder="0"></iframe>
+    <script>
+        // 0
+        console.log(window.location.ancestorOrigins);
+        // 1
+        console.log(window.frames.length);
+        // this.length 表示当前页面iframe的个数
+        console.log(parent.length);
+    </script>
+</body>
+</html>

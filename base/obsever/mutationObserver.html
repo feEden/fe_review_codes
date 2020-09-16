@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>MutationObserver</title>
+</head>
+<body>
+    <div>
+        <button id="updateAttr">修改属性</button>
+        <button id="addAttr">新增属性</button>
+        <button id="addNewNode">新增子节点</button>
+        <!-- <button id="subtree">测试subtree</button> -->
+        <button id="updateNodeContent">修改节点内容</button>
+    </div>
+    <ul id="id" name="langage">
+        <li><span class="span_0">JavaScript</span></li>
+    </ul>
+    <script>
+        // https://www.zhangxinxu.com/wordpress/2019/08/js-dom-mutation-observer/
+
+        const updateAttrObj = document.querySelector('#updateAttr');
+        const addNewNodeObj = document.querySelector('#addNewNode');
+        const addAttrObj = document.querySelector('#addAttr');
+        const subtreeObj = document.querySelector('#subtree');
+        const updateNodeContentObj = document.querySelector('#updateNodeContent');
+        const targetNode = document.querySelector(`#id`);
+        let count = 1;
+
+        // 修改属性
+        updateAttrObj.onclick = () => {
+            targetNode.setAttribute('name', 'langage');
+        }
+        // 新增属性
+        addAttrObj.onclick = () => {
+            targetNode.setAttribute('class', 'ulClass');
+        }
+        // 新增子节点
+        addNewNodeObj.onclick = () => {
+            const liObj = document.createElement('li');
+            const a = count++;
+            liObj.innerHTML = `<span class='span_${a}'>JavaScript${a}</span>`;
+            targetNode.appendChild(liObj);
+        }
+        updateNodeContentObj.onclick = () => {
+            const span_0 = document.querySelector('.span_0');
+            span_0.innerText = 'Vue';
+        }
+
+        // 测试subtree
+        // subtreeObj.onclick = () => {
+        //     const span_1 = document.querySelector('.span_1');
+        //     span_1.setAttribute('class', 'aaa');
+        //     console.log(span_1.classList);
+        //     console.log(span_1.className);
+        // }
+
+        // Options for the observer (which mutations to observe)
+        let config = {
+            attributes: true,
+            childList: true,
+            subtree: true
+        };
+
+        // Callback function to execute when mutations are observed
+        const mutationCallback = (mutationsList) => {
+            console.log(mutationsList);
+            for(let mutation of mutationsList) {
+                let type = mutation.type;
+                switch (type) {
+                    case "childList":
+                        console.log("A child node has been added or removed.");
+                        break;
+                    case "attributes":
+                        console.log(`The ${mutation.attributeName} attribute was modified.`);
+                        break;
+                    case "subtree":
+                        console.log(`The subtree was modified.`);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        };
+
+        // Create an observer instance linked to the callback function
+        let observer = new MutationObserver(mutationCallback);
+
+        // Start observing the target node for configured mutations
+        observer.observe(targetNode, config);
+
+        // Later, you can stop observing
+        // observer.disconnect();
+    </script>
+</body>
+</html>

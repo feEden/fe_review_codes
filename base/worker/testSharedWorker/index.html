@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>计算 a + b</title>
+</head>
+<body>
+    <input type="text" name="number1" id="number1" />
+    <br/>
+    <input type="text" name="number2" id="number2" />
+    <p></p>
+    <script>
+        if (!!window.SharedWorker) {
+            var input1 = document.querySelector('#number1');
+            var input2 = document.querySelector('#number2');
+            var result = document.querySelector('p');
+
+            var worker = new SharedWorker('./worker.js');
+            // worker.port.start();
+
+            // 注册标示
+            worker.port.postMessage({id: 'inputPage'});
+
+            input1.onchange = () => {
+                // 数字变化，通知resultPage重新计算
+                worker.port.postMessage({id: 'resultPage', data: [Number(input1.value) || 0, Number(input2.value) || 0]});
+            } 
+            input2.onchange = () => {
+                // 数字变化，通知resultPage重新计算
+                worker.port.postMessage({id: 'resultPage', data: [Number(input1.value) || 0, Number(input2.value) || 0]});
+            }
+
+            // 接收resultPage通知的数据
+            worker.port.onmessage = ({ data }) => {
+                result.innerText = data;
+            }
+        }
+    </script>
+</body>
+</html>

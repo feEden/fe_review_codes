@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IntersectionObserver</title>
+    <style>
+        html, body {
+            height: 200%;
+            overflow: auto;
+        }
+
+        .scroll--wrapper {
+            width: 400px;
+            height: 400px;
+            margin: 0 auto;
+            border: 1px solid red;
+            overflow: auto;
+        }
+
+        .scroll-item {
+            height: 100px;
+            width: 100px;
+            margin: 300px auto;
+            margin-top: 700px;
+            background-color: yellow;
+        }
+    </style>
+</head>
+<body>
+    <div class="scroll--wrapper">
+        <div class="scroll-item">
+
+        </div>
+    </div>
+    <script>
+        const scsrollObj = document.querySelector('.scroll-item');
+        const root = document.querySelector('.scroll--wrapper');
+
+        const intersectionObserver = new IntersectionObserver((data) => {
+            const {intersectionRatio} = data[0];
+            console.log(data[0]);        
+        }, {
+            // 控制交叉比例，触发回调函数
+            threshold: [0, 0.25, 0.5, 0.75, 1],
+            // 指定rootBounds
+            root,
+            // 扩大交叉区域100px
+            rootMargin: '100px',
+        });
+        intersectionObserver.observe(scsrollObj);
+    </script>
+</body>
+</html>

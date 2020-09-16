@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>async demo1</title>
+</head>
+<body>
+    <script>
+        (async () => {
+            const promise = () => {
+                console.log(111);
+                return Promise.resolve('promise.resolve...');
+            };
+            /**
+                遇到await, 函数test暂停指定（await后面的会执行完毕），test函数剩下部分全部进入任务队列（微任务），
+                js引擎跳出异步函数，回到异步函数被调用的上下文中继续执行代码
+            **/
+            async function test() {
+                console.log('start async...');
+                const res = await promise();
+                console.log('end async....' + res);
+            }
+            console.log('start...');
+            await test();
+            console.log('end...');
+        })()
+        console.log('outter...');
+
+        // 加await执行test的结果：
+        // start
+        // start async...
+        // 111
+        // outter
+        // end async....
+        // end...
+        
+        /**
+            不加await执行test的结果：执行结果：
+                start...
+                start async...
+                111
+                end...
+                outter...
+                end async....promise.resolve...
+        **/
+    </script>
+</body>
+</html>

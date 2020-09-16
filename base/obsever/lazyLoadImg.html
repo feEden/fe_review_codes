@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>懒加载图片</title>
+    <style>
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .section {
+            width: 500px;
+            height: 500px;
+            margin: 0 auto;
+            overflow-y: auto;
+            border: 1px solid yellowgreen;
+        }
+
+        img {
+            width: 100px;
+            margin: 0 auto;
+            margin-top: 600px;
+            margin-bottom: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="section">
+        <img alt="懒加载图片">
+    </div>
+    <script>
+        window.onload = () => {
+            const img = document.querySelector('img');
+            const section = document.querySelector('.section');
+
+            img.setAttribute('data-src', './2.gif');
+
+            img.onload = () => {
+                console.log('img load finish...');
+            }
+
+            img.onerror = (e) => {
+                console.log('img load error...');
+                img.setAttribute('src', './1.jpg');
+            }
+
+            const intersectionObserver = new IntersectionObserver((entries) => {
+                const [item] = entries;
+                const { isIntersecting = false, intersectionRatio = 0} = item;
+                console.log(intersectionRatio);
+
+                if (isIntersecting) {
+                    const imgURL = img.getAttribute('data-src');
+                    img.setAttribute('src', imgURL);
+                    intersectionObserver.unobserve(img);
+                }
+            }, {
+                root: section,
+            });
+
+            intersectionObserver.observe(img);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ResizeObserver</title>
+    <style>
+        .tooltip + div {
+            width: 200px;
+            height: 100px;
+            background: yellowgreen;
+            text-align: center;
+            line-height: 100px;
+            border: 1px solid yellow;
+        } 
+    </style>
+</head>
+<body>
+    <div class="tooltip">
+        <button class="padding">padding + 10</button>
+        <button class="border">border + 10</button>
+        <button class="margin">margin + 10</button>
+        <button class="width">width + 10</button>
+        <button class="display">隐藏/显示</button>
+        <button class="position">定位</button>
+    </div>
+    <div class="content">
+        <span>内容</span>
+        <span>内容</span>
+    </div>
+    <script>
+        // https://www.zhangxinxu.com/wordpress/2020/03/dom-resize-api-resizeobserver/?shrink=1
+
+        const content = document.querySelector('.content');
+        const padding = document.querySelector('.padding');
+        const border = document.querySelector('.border');
+        const margin = document.querySelector('.margin');
+        const width = document.querySelector('.width');
+        const display = document.querySelector('.display');
+        const position = document.querySelector('.position');
+
+        // 不触发
+        padding.onclick = () => {
+            const paddingW = getComputedStyle(content).padding.split('px')[0];
+            content.style.padding = `${Number(paddingW) + 10}px`;
+        }
+
+        // 不触发
+        margin.onclick = () => {
+            const marginW = getComputedStyle(content).margin.split('px')[0];
+            content.style.margin = `${Number(marginW) + 10}px`;
+        }
+
+        // 不触发
+        border.onclick = () => {
+            //  需要设置border-style 才能生效
+            const borderW = getComputedStyle(content).borderWidth.split('px')[0];
+            content.style.borderWidth = `${Number(borderW) + 10}px`;
+        }
+
+        // 触发
+        width.onclick = () => {
+            const widthW = getComputedStyle(content).width.split('px')[0];
+            content.style.width = `${Number(widthW) + 10}px`;
+        }
+        
+        // 触发
+        display.onclick = () => {
+            const displayAttr = getComputedStyle(content).display;
+            content.style.display = displayAttr === 'none' ? 'block' : 'none';
+        }
+
+        //  不触发
+        position.onclick = () => {
+            content.style.cssText = 'position: absolute; top: -10px;';
+        }
+        
+        // 监听DOM内容的变化（width/height变化）
+        // 隐藏/显示
+        // resize 事件 只能挂载在window上，监听窗口的变化
+        const resizeObserver = new ResizeObserver((entries) => {
+            for (const entry of entries) {
+                console.log(entry);
+            }
+        });
+        resizeObserver.observe(content);
+    </script>
+</body>
+</html>

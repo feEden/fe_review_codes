@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <button id="tab1">tab1</button>
+        <button id="tab2">tab2</button>
+        <button id="tab3">tab3</button>
+    </div>
+    <script>
+        /**
+         * 多个tab，只对应一个内容窗口，点击每个tab都会请求一个接口，并渲染到内容框，怎么确保频繁点击tab,但能够确保数据正常显示
+         * 
+         * 思路； 保证最后一次请求成功，频繁切换tab，取消前面的请求，使用节流控制请求次数
+         * */
+        const btn1 = document.querySelector('#tab1');
+        const btn2 = document.querySelector('#tab2');
+        const btn3 = document.querySelector('#tab3');
+
+        // 防抖，指定时间内频繁触发，重新开始计时
+        const debounce = (fn, delay) => {
+            let timeOut;
+
+            return (...args) => {
+                if (timeOut) {
+                    clearTimeout(timeOut);
+                }
+
+                timeOut = setTimeout(() => {
+                    timeOut = null;
+                    fn.apply(null, args);
+                }, delay);
+            }
+        }
+
+        // 上一次请求
+        let xhr;
+        // 表示是否正在请求
+        let flag = false;
+
+        const request = (val) => {
+            if (flag) {
+                // 取消上一次请求
+                clearTimeout(xhr); 
+                console.error(`上一次取消请求`);
+            }
+            flag = true;
+            console.log(`${val}开始请求`);
+            xhr = setTimeout(() => {
+                console.warn(`${val}响应成功`);
+                flag = false;
+            }, Math.random() * 2000);
+        }
+        
+        // 减少请求发送次数
+        const debounceRequest = debounce(request, 100);
+
+        const setInnerHTML = (text) => {
+            content.innerHTML = text;
+        }
+
+        btn1.addEventListener('click', () => {
+            debounceRequest('btn1');
+        });
+
+        btn2.addEventListener('click', () => {
+            debounceRequest('btn2');
+        });
+
+        btn3.addEventListener('click', () => {
+            debounceRequest('btn3');
+        });
+    </script>
+</body>
+</html>

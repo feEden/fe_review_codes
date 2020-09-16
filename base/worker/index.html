@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>web worker</title>
+</head>
+<body>
+    <script>
+        console.log('主程序执行开始...');
+        //  创建一个worker 浏览器将启动独立的线程执行这个这个js文件
+        // 遵守通源策略
+        const worker = new Worker('index.js');
+        // 终止worker，该方法不会给 worker 留下任何完成操作的机会；就是简单的立即停止
+        // worker.terminate();
+
+        // 监听worker内部发送的信息
+        worker.onmessage = (e) => {
+            console.log(e.data);
+            // worker 发送消息 worker 内部监听
+            worker.postMessage('I am fine, and you?');
+        }
+
+        // 捕获worker内部的错误
+        worker.onerror = (e) => {
+            console.log(e);
+        }
+
+        // setTimeout(() => {
+        console.log('主程序执行结束...');
+        // }, 2000);
+    </script>
+</body>
+</html>

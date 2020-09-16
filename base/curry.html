@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // 版本1
+      //   const curry = (fn, ...args1) => {
+      //     const fnParmaLength = fn.length;
+      //     return (...args2) => {
+      //       const params = [...args1, ...args2];
+      //       // 实参 < 形参
+      //       if (params.length < fnParmaLength) {
+      //         // 继续收集
+      //         return curry(fn, ...params);
+      //       }
+
+      //       return fn.apply(null, params);
+      //     };
+      //   };
+
+      // 版本1
+      //   const curry = (fn, ...args) => {
+      //     if (fn.length <= args.length) {
+      //       return fn.apply(null, args);
+      //     }
+
+      //     return (...args1) => curry(fn, ...args, ...args1);
+      //   };
+
+      //   const add = (a, b, c, d) => {
+      //     return a + b + c + d;
+      //   };
+      //   const addCurry = curry(add);
+      //   console.log(addCurry(1)(2)(3)(4));
+      //   console.log(addCurry(1, 2, 3, 4));
+      //   console.log(addCurry(1, 2)(3, 4));
+      //   console.log(addCurry(1)(2, 3, 4));
+      //   console.log(add(1, 2, 3, 4));
+      //   console.log(curry(add, 1)(2)(3)(4));
+
+      // 无限参数
+      /**
+       * 
+        // 实现一个add方法，使计算结果能够满足如下预期：
+        add(1)(2)(3) = 6;
+        add(1, 2, 3)(4) = 10;
+        add(1)(2)(3)(4)(5) = 15;
+      */
+      function add(...args1) {
+        const params = [...args1];
+
+        return function inner(...args2) {
+            // 记录每次传入的参数
+            params.push(...args2);
+            
+            inner.toString = () => {
+                return params.reduce((a, b) => a = a + b, 0);
+            }
+
+            return inner;
+        }
+      }
+
+      // const promise1 = new Promise((resolve, reject) => {
+      //     // resolve('error promise');
+      //     reject('error promise');
+      //   });
+
+      // const promise2 = new Promise((resolve, reject) => {
+      //     resolve('res2');
+      //   });
+
+      // const promise3 = new Promise((resolve, reject) => {
+      //     resolve('res3');
+      //   });
+
+      // const promiseAll = function() {
+      //   return Promise.all([promise1, promise2, promise3]).then((res) => {
+      //     console.log('all res=', res);
+      //   }).catch((err) => {
+      //     console.log('err', err);
+      //   });
+      // };
+      // promiseAll();
+      // const promiseAll = (promiseArray) => {
+      //   if (!Array.isArray(promiseArray)) {
+      //     throw new Error('arguments is not a array!');
+      //     return;
+      //   }
+      //   const resolveData = Array(promiseArray.length);
+      //   return new Promise((resolve, reject) => {
+      //     let count = 0;
+      //     for (let i = 0; i < promiseArray.length; i++) {
+      //       Promise.resolve(promiseArray[i]).then((res) => {
+      //         count += 1;
+      //         resolveData[i] = res;
+      //         if (count === promiseArray.length) {
+      //           resolve(resolveData);
+      //         }
+      //       }).catch((err) => {
+      //         reject(err);
+      //       });
+      //     }
+      //   });
+      // };
+      // promiseAll([promise1, promise2, promise3, 1]).then(res => {
+      //   console.log('res', res);
+      // }).catch(err => {
+      //   console.log('err', err);
+      // });
+      
+
+      console.log(+add(1)(2)(3));
+      console.log(+add(1, 2, 3)(4));
+      console.log(+add(1)(2)(3)(4)(5));
+    </script>
+  </body>
+</html>

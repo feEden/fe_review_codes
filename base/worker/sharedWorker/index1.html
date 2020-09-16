@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <title>多个页面之间的通信</title>
+  </head>
+  <body>
+    <button class="btn1">发送消息1</button>
+    <button class="btn2">发送消息2</button>
+    <button class="btn3">发送消息3</button>
+    <button class="btn4">发送消息4</button>
+    <div>
+      <input type="text" class="input1" />
+      <button class="btn5">发送</button>
+    </div>
+    <div class="chat"></div>
+    <script>
+      var worker = new SharedWorker("worker.js");
+    //   worker.port.start();
+      const ID = 123;
+      worker.port.postMessage({ id: ID });
+      var to_ws = function(data) {
+        worker.port.postMessage([122, data]);
+      };
+      document.querySelector(".btn1").onclick = function() {
+        to_ws("发送到demo1消息1");
+      };
+      document.querySelector(".btn2").onclick = function() {
+        to_ws("发送到demo1消息2");
+      };
+      document.querySelector(".btn3").onclick = function() {
+        to_ws("发送到demo1消息3");
+      };
+      document.querySelector(".btn4").onclick = function() {
+        to_ws("发送到demo1消息4");
+      };
+
+      //接收woker的发送消息
+      worker.port.onmessage = function(e) {
+        console.log(e);
+        chuli_xiaoxi(e.data[0], e.data[1]);
+      };
+
+      var ochat = document.querySelector(".chat");
+      var oinput = document.querySelector(".input1");
+      document.querySelector(".btn5").onclick = function() {
+        var value = oinput.value;
+        if (value) {
+          chuli_xiaoxi(122, value);
+          to_ws(value);
+          //oinput.value = "";
+        }
+      };
+      var chuli_xiaoxi = function(id, data) {
+        var odiv = document.createElement("div");
+        if (id === 122) {
+          odiv.style.color = "red";
+        } else {
+          odiv.style.color = "green";
+        }
+        odiv.innerHTML = id + "说： " + data;
+        ochat.appendChild(odiv);
+      };
+    </script>
+  </body>
+</html>

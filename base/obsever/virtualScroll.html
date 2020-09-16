@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>虚拟滚动</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .section {
+            width: 600px;
+            height: 600px;
+            margin: 0 auto;
+            margin-top: 100px;
+            font-size: 12px;
+            overflow-y: auto;
+            border: 1px solid yellowgreen;
+            box-sizing: border-box;
+        }
+
+        ul > li{
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            list-style: none;
+            border-bottom: 1px solid orchid;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <div class="section">
+        <div class="scroll">
+            <div class="start"></div>
+            <ul></ul>
+            <div class="end"></div>
+        </div>
+    </div>
+    <script>
+        window.onload = () => {
+            const ul = document.querySelector('ul');
+            const lis = document.querySelectorAll('li');
+            const section = document.querySelector('.section');
+            const scroll = document.querySelector('.scroll');
+            const start = document.querySelector('.start');
+            const end = document.querySelector('.end');
+
+            function getData() {
+                const datas = [];
+                for (let i =0; i < 100000; i++) {
+                    const li = document.createElement('li');
+                    li.innerText = `第${i}个数据`;
+                    datas.push(li);
+                }
+
+                return datas;
+            }
+
+            function loadMore(datas, start, end) {
+                const fragment = document.createDocumentFragment();
+                const item = datas.slice(start, end);
+                item.forEach((li) => {
+                    fragment.append(li);
+                });
+
+                return fragment;
+            }
+
+            // 准备十万条数据
+            const datas = getData();
+            const itemHeight = 30;
+            // 可视区域的高度
+            const { height } = section.getBoundingClientRect();
+            // 可视区域的高度能渲染的条数
+            let count = Number.parseInt(height / itemHeight, 10);
+            // 滚动的高度
+            // const scrollH = datas.length * itemHeight;
+            // scroll.style.height = scrollH + 'px';
+
+            const intersectionObserver = new IntersectionObserver((entries) => {
+                console.log(1);
+                const [item] = entries;
+                const { intersectionRatio, target } = item;
+                
+                const { scrollTop } = section;
+                const startIndex = Number.parseInt(scrollTop / itemHeight, 10);;
+                const endIndex = startIndex + count;
+                // if (target.getAttribute('class') === 'start') {
+                //     endIndex = startIndex + count;
+                // } else {
+                //     console.log('end...');
+                // }
+
+                // const scrollY = scrollTop;
+                // ul.style.transform = `translate3d(0, ${scrollY}px, 0)`;
+
+                // if (intersectionRatio <= 0) {
+                //     // 完全消失，计算下一页数据
+                //     console.log('hidden');
+                // } else if (intersectionRatio >= 0.75 && scrollTop === 0){
+                //     // 完全展示，计算上一页数据
+                //     console.log('show');
+                // }
+                ul.innerHTML = '';
+                ul.append(loadMore(datas, startIndex, endIndex));
+            }, {
+                root: section,
+            });
+            intersectionObserver.observe(start);
+            intersectionObserver.observe(end);
+        }
+    </script>
+</body>
+</html>
