@@ -49,7 +49,14 @@ Function.prototype.myBind = function (thisArg, ...args) {
     }
 
     // 补充 将boundFn的原型指向bindFn的原型
-    // boundFn.prototype = Object.create(bindFn.prototype);
+    // boundFn.prototype = Object.create(bindFn.prototype, {
+    //     constructor: {
+    //         value: boundFn,
+    //         configurable: true,
+    //         enumerable: false,
+    //         writable: true,
+    //     },
+    // });
     if (bindFn.prototype) {
         var Empty = function Empty() {};
         Empty.prototype = bindFn.prototype;
